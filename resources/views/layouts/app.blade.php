@@ -14,10 +14,8 @@
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
         @yield('page_styles')
 
-
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}" defer></script>
-        @yield('page-scripts')
 
     </head>
     <body class="font-sans antialiased">
@@ -35,6 +33,10 @@
             <main>
                 {{ $slot }}
             </main>
-        </div>   
+        </div> 
+
+        <!-- Page Scripts  -->
+        @yield('page-scripts')  
+        
     </body>
 </html>

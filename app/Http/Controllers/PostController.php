@@ -20,6 +20,8 @@ class PostController extends Controller
     public function index()
     {
         //
+        $posts = Post::orderBy('created_at', 'desc')->get();
+        return view('posts.posts')->with('posts', $posts);
     }
 
     /**
@@ -67,9 +69,6 @@ class PostController extends Controller
         //Return redirect
 
         return redirect('dashboard/posts')->with('status', 'Post has been added successfully');
-      
-
-        
 
     }
 

@@ -10,32 +10,6 @@
 
     @endsection
   
-    @section('page-scripts')
-
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-        <!--tinymce-->
-        <script src="https://cdn.tiny.cloud/1/mfu67e4n6j1q0r9sjrfaffxoye54z8zxjiod4lr8jrdcgi2t/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-        <script>
-        tinymce.init({
-                selector: 'textarea',
-                plugins: 'link',
-             
-    });
-    </script>
-        <style>
-             input:checked + svg {
-                  display: block;
-            }
-         </style>
-        
-         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-         <script>
-             $(document).ready(function() {
-                $('.js-example-basic-multiple').select2();
-            });
-         </script>
-
-    @endsection
     <div class="py-2">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -109,4 +83,30 @@
             </div>
         </div>
     </div>
+        @section('page-scripts')
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <!--tinymce-->
+        <script src="https://cdn.tiny.cloud/1/mfu67e4n6j1q0r9sjrfaffxoye54z8zxjiod4lr8jrdcgi2t/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+        <script>
+        tinymce.init({
+                selector: 'textarea',
+                plugins: 'link',
+                    
+            });
+        </script>
+                <style>
+                    input:checked + svg {
+                        display: block;
+                    }
+                </style>
+                
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script>
+                    $(document).ready(function() {
+                        $('.js-example-basic-multiple').select2();
+                    });
+        </script>
+
+         @endsection
 </x-app-layout>
