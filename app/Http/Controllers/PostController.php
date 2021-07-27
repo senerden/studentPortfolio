@@ -6,8 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Activity;
 use App\Models\Outcome;
 use App\Models\Post;
-
-
+use App\Models\Image;
 
 
 class PostController extends Controller
@@ -49,27 +48,64 @@ class PostController extends Controller
 
         $validated = $request->validate([
 
-            'title' => 'required|max:255',
             'description' => 'required',
             'activity_id' => 'required',
+            'cover_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:1999',
+            'title' => 'required|max:255',
+            'image' => 'mimes:jpeg,png,jpg,gif,svg',
        
         ]);
 
-        //Save Data
+        //Save Post
         $post= new Post;
         $post->title = $request->title;
         $post->description = $request->description;
         $post->activity_id = $request->activity_id;
+
+        if($request->hasFile('cover_image')) {
+
+            $coverImageToStore = time() . '-' . $request->title . '.' . $request->cover_image->getClientOriginalExtension();
+
+        // Upload Image
+            $path = $request->cover_image->storeAs('public/images', $coverImageToStore);
+
+        } else {
+
+        //if no image
+
+            $coverImageToStore = 'noimage.jpg';
+
+        };
+
+        // Save the image name
+        $post->cover_image = $coverImageToStore;
+
         $post->save();
 
         //pivot table (attach?)
 
         $post->outcomes()->sync($request->outcomes, false);
 
+        //save post images
+        
+        if ($request->hasFile('image')) {
+
+            $files = $request-> file('image');
+
+            foreach ($files as $file) {
+                
+                $imageName  = time() . '-' . $request->title . '.' . $file->getClientOriginalName();
+                $path2 = $file->storeAs('public/images', $imageName);
+                $image = Image::create ([
+                    'image' => $imageName,
+                    'post_id' => $post->id,
+                ]);
+            }
+        
+        }
+
         //Return redirect
-
         return redirect('dashboard/posts')->with('status', 'Post has been added successfully');
-
     }
 
     /**
@@ -92,6 +128,13 @@ class PostController extends Controller
     public function edit($id)
     {
         //
+        $post = Post::findOrFail($id);
+        $activities = Activity::orderBy('name')->get();
+        $outcomes = Outcome::orderBy('name')->get();
+        $selectedOutcomes = $post->outcomes;
+     
+
+        return view('posts.posts-edit')->with('post', $post)->with('activities', $activities)->with('outcomes', $outcomes)->with('selectedOutcomes', $selectedOutcomes);
     }
 
     /**

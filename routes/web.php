@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\OutcomeController;
+use App\Http\Controllers\PagesController;
 use App\Http\Controllers\PostController;
 
 
@@ -19,9 +20,12 @@ use App\Http\Controllers\PostController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Page Routes
+
+//Home Page
+Route::get('/', [PagesController::class, 'index'])->name('home');
+
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -41,3 +45,5 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::resource('posts', PostController::class);
 
 });
+
+

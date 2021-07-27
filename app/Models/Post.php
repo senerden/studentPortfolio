@@ -13,6 +13,7 @@ class Post extends Model
         'name',
         'description',
         'activity_id',
+        'cover_image',
        
     ];
 
@@ -24,5 +25,10 @@ class Post extends Model
     public function outcomes () {
 
         return $this ->belongsToMany(Outcome::class);
+    }
+
+    public function images () {
+
+        return $this -> belongsToMany(Image::class);
     }
 }

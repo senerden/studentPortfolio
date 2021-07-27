@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Add Post') }}
+            {{ __('Edit Post') }}
         </h2>
     </x-slot>
     @section('page_styles')
@@ -18,7 +18,7 @@
                     <!-- Validation Errors -->
                     <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
-                    <form method="POST" action="{{ route('posts.store') }}" enctype="multipart/form-data">
+                    <form method="PUT" action="{{ route('posts.update', $post->id) }}" enctype="multipart/form-data">
                         @csrf
                            <!-- Choose Activity -->                    
                         <div class = "mb-4">
@@ -26,12 +26,16 @@
 
                                 <select id="activities" name="activity_id" class="rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
 
-                                    <option selected disabled class="text-red-500">Select Activity</option>
-
+                                
                                     @foreach ($activities as $activity)
 
-                                    <option value="{{$activity->id}}">{{$activity->name}}</option>
-                                        
+                                    <option value="{{$activity->id}}" 
+                                        @if ($post->activity_id == $activity->id)
+                                            {{'selected'}}
+                                        @endif 
+                                        > {{$activity->name}}
+                                    </option>
+               
                                     @endforeach
                                 
                                 </select>
@@ -39,7 +43,7 @@
                         <!-- Name -->
                         <div>
                             <x-label for="title" :value="__('Post Title')" />
-                            <x-input id="title" class="block mt-1 w-full" type="text" name="title" autofocus />
+                            <x-input id="title" class="block mt-1 w-full" type="text" name="title" autofocus value="{{$post->title}}"/>
                         </div>
                         <!-- Description -->
                         <div class="mt-4">
@@ -48,12 +52,18 @@
                             <x-text-area name="description" id="mytextarea" rows="8"> </x-text-area>
                             {{--  <x-input id="description" class="block mt-1 w-full" type="text" rows="4" name="description"  required />  --}}
                         </div>         
-                        <div class="rounded-sm border-solid py-3 px-6 m-4 border-solid">
+                        <div class="rounded-sm mb-4">
                         <div class="mt-4 text-indigo-900">Select Outcomes</div>
 
                         <select class="js-example-basic-multiple" style="width: 75%" name="outcomes[]" multiple="multiple">
                             @foreach ($outcomes as $outcome)
-                               <option value="{{$outcome->id}}">{{$outcome->name}}</option>    
+                               <option value="{{$outcome->id}}"
+                                   @foreach ($selectedOutcomes as $selectedOutcome)
+                                   @if ($outcome->id == $selectedOutcome->id)
+                                    {{'selected'}}         
+                                   @endif        
+                                   @endforeach         
+                                >{{$outcome->name}}</option>    
                             @endforeach       
                         </select>
                         {{--  <div class="grid grid-cols-6 gap-4">
@@ -71,6 +81,9 @@
                             <div>
                                 <x-label for="cover_image" :value="__('Cover Image')" />
                                 <x-input id="cover_image" class="block mt-1 w-full" type="file" name="cover_image" autofocus />
+                                <div class="mt-6">
+                                <img src="{{Storage::url('images/'.$post->cover_image)}}" width="200" height="200" alt="Cover Image">
+                                </div>
                             </div> 
                         <!-- Post Images--> 
                             <div class="mt-4 mb-4">
@@ -80,7 +93,7 @@
                         </div>          
                         <div class="flex items-center justify-end mt-4">
                             <x-button class="ml-4">
-                                {{ __('Post') }}
+                                {{ __('Update') }}
                             </x-button>
                         </div>
                     </form>                   
@@ -97,7 +110,11 @@
         tinymce.init({
                 selector: '#mytextarea',
                 plugins: 'link',
-                    
+                 setup: function (editor) {
+                  editor.on('init', function (e) {
+                     editor.setContent('{{(strip_tags($post->description))}}');          
+                     });
+                    }
             });
         </script>
                 <style>
